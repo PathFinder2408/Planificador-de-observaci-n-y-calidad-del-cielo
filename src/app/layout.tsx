@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="es-CL">
       <body className="relative min-h-screen antialiased">
         <StarfieldBackdrop />
-        {children}
+        <div className="relative z-10">{children}</div>
       </body>
     </html>
   );
