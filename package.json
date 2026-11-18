@@ -1,0 +1,38 @@
+{
+  "name": "planificador-observacion-cielo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Planificador de observación astronómica y calidad del cielo para la Región de Coquimbo y observatorios de Chile.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "astronomy-engine": "^2.1.19",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitest/coverage-v8": "^5.1.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.6",
+    "postcss": "^8.5.33",
+    "prettier": "^3.10.1",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}

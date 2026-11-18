@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: lint
+        name: ESLint (zero warnings)
+        entry: npm run lint
+        language: system
+        pass_filenames: false
+      - id: typecheck
+        name: TypeScript strict check
+        entry: npm run typecheck
+        language: system
+        pass_filenames: false
