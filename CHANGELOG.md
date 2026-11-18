@@ -7,6 +7,16 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-18
+
+### Added
+
+- Autenticación con `bcryptjs` y JWT (`jose`) en cookie `HttpOnly` (`/api/auth/register`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`).
+- Persistencia de sitios y objetos favoritos en PostgreSQL (`/api/favorites`) con migraciones SQL versionadas reversibles (`db/migrations/0001_init.up.sql` y `.down.sql`).
+- Interfaz de acceso (`AuthBar`) y guardado de favoritos en header y tabla de objetos.
+- Captura real del dashboard en `public/screenshots/dashboard.png` y `README.md` completo para portafolio y despliegue en Vercel.
+- ADR-0002 (`docs/adr/0002-auth-y-persistencia.md`) y suite de tests de sesión, repositorios y rutas `/api/auth/*` + `/api/favorites`.
+
 ## [0.4.0] - 2026-11-18
 
 ### Added
