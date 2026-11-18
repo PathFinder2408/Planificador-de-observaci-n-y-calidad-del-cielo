@@ -7,6 +7,12 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-18
+
+### Added
+
+- Fondo dinámico liviano `StarfieldBackdrop` (`<canvas>` determinista con deriva sideral sutil, arcos de declinación, pausa en `prefers-reduced-motion` y adaptación a `prefers-color-scheme: light`).
+
 ## [0.6.0] - 2026-11-18
 
 ### Changed
