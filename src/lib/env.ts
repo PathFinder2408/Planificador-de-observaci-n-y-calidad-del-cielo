@@ -5,6 +5,8 @@ const envSchema = z.object({
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
   OPEN_METEO_BASE_URL: z.string().url().default("https://api.open-meteo.com/v1"),
   EXTERNAL_API_TIMEOUT_MS: z.coerce.number().int().min(500).max(30000).default(5000),
+  DATABASE_URL: z.string().min(1).optional(),
+  AUTH_SECRET: z.string().min(16).optional(),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

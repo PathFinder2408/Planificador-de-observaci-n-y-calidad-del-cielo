@@ -1,19 +1,30 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Eye } from "lucide-react";
+import { Check, Eye, Star } from "lucide-react";
 import type { TargetVisibility } from "@/lib/astro/visibility";
 
 interface ObjectsTableProps {
   planets: TargetVisibility[];
   messier: TargetVisibility[];
   selectedIds: string[];
+  favoriteTargetIds: string[];
+  canFavorite: boolean;
   onToggleSelect: (id: string) => void;
+  onToggleFavorite: (id: string) => void;
 }
 
 type FilterMode = "all" | "planets" | "messier" | "observable";
 
-export function ObjectsTable({ planets, messier, selectedIds, onToggleSelect }: ObjectsTableProps) {
+export function ObjectsTable({
+  planets,
+  messier,
+  selectedIds,
+  favoriteTargetIds,
+  canFavorite,
+  onToggleSelect,
+  onToggleFavorite,
+}: ObjectsTableProps) {
   const [filter, setFilter] = useState<FilterMode>("all");
 
   const rows = useMemo(() => {
@@ -69,6 +80,7 @@ export function ObjectsTable({ planets, messier, selectedIds, onToggleSelect }: 
           <thead>
             <tr className="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400">
               <th className="py-2.5 pr-3">Graficar</th>
+              {canFavorite && <th className="py-2.5 pr-3">Fav</th>}
               <th className="py-2.5 pr-3">Objeto</th>
               <th className="py-2.5 pr-3">Tipo</th>
               <th className="py-2.5 pr-3">Constelación</th>
@@ -97,6 +109,24 @@ export function ObjectsTable({ planets, messier, selectedIds, onToggleSelect }: 
                       <Check className="h-3.5 w-3.5" />
                     </button>
                   </td>
+                  {canFavorite && (
+                    <td className="py-2.5 pr-3">
+                      <button
+                        type="button"
+                        onClick={() => onToggleFavorite(item.id)}
+                        aria-label={`Favorito ${item.name}`}
+                        className="text-slate-400 transition hover:text-amber-400"
+                      >
+                        <Star
+                          className={`h-4 w-4 ${
+                            favoriteTargetIds.includes(item.id)
+                              ? "fill-amber-400 text-amber-400"
+                              : ""
+                          }`}
+                        />
+                      </button>
+                    </td>
+                  )}
                   <td className="py-2.5 pr-3 font-medium text-white">{item.name}</td>
                   <td className="py-2.5 pr-3 text-xs text-slate-300">{item.category}</td>
                   <td className="py-2.5 pr-3 text-xs text-slate-400">{item.constellation}</td>
