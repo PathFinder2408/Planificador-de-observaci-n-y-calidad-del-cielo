@@ -13,7 +13,55 @@ interface StarSeed {
   hasHalo: boolean;
 }
 
+interface CometTrack {
+  periodSec: number;
+  durationSec: number;
+  offsetSec: number;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+  tailLength: number;
+  tint: "amber" | "blue";
+}
+
 const STAR_COUNT = 145;
+
+const COMET_TRACKS: readonly CometTrack[] = [
+  {
+    periodSec: 9,
+    durationSec: 2.2,
+    offsetSec: 1.5,
+    startX: 0.08,
+    startY: 0.14,
+    endX: 0.44,
+    endY: 0.38,
+    tailLength: 110,
+    tint: "amber",
+  },
+  {
+    periodSec: 13,
+    durationSec: 2.4,
+    offsetSec: 6.2,
+    startX: 0.88,
+    startY: 0.1,
+    endX: 0.56,
+    endY: 0.34,
+    tailLength: 125,
+    tint: "blue",
+  },
+  {
+    periodSec: 17,
+    durationSec: 2.0,
+    offsetSec: 11.0,
+    startX: 0.15,
+    startY: 0.72,
+    endX: 0.48,
+    endY: 0.52,
+    tailLength: 95,
+    tint: "blue",
+  },
+];
 
 function createDeterministicStars(): StarSeed[] {
   const stars: StarSeed[] = [];
@@ -46,6 +94,57 @@ function getStarRgb(tint: StarSeed["tint"]): string {
   if (tint === "amber") return "229, 152, 56";
   if (tint === "blue") return "138, 180, 232";
   return "230, 235, 242";
+}
+
+function drawComets(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  timeSec: number
+): void {
+  for (const track of COMET_TRACKS) {
+    const cyclePos = (timeSec + track.offsetSec) % track.periodSec;
+    if (cyclePos > track.durationSec) continue;
+
+    const progress = cyclePos / track.durationSec;
+    const fade = Math.sin(progress * Math.PI);
+    const sx = track.startX * width;
+    const sy = track.startY * height;
+    const ex = track.endX * width;
+    const ey = track.endY * height;
+
+    const headX = sx + (ex - sx) * progress;
+    const headY = sy + (ey - sy) * progress;
+
+    const dx = ex - sx;
+    const dy = ey - sy;
+    const dist = Math.hypot(dx, dy) || 1;
+    const tailX = headX - (dx / dist) * track.tailLength;
+    const tailY = headY - (dy / dist) * track.tailLength;
+
+    const rgb = track.tint === "amber" ? "229, 152, 56" : "138, 180, 232";
+    const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+    grad.addColorStop(0, `rgba(${rgb}, 0)`);
+    grad.addColorStop(0.65, `rgba(${rgb}, ${(0.22 * fade).toFixed(3)})`);
+    grad.addColorStop(1, `rgba(230, 235, 242, ${(0.85 * fade).toFixed(3)})`);
+
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(tailX, tailY);
+    ctx.lineTo(headX, headY);
+    ctx.stroke();
+
+    ctx.fillStyle = `rgba(${rgb}, ${(0.28 * fade).toFixed(3)})`;
+    ctx.beginPath();
+    ctx.arc(headX, headY, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = `rgba(230, 235, 242, ${(0.9 * fade).toFixed(3)})`;
+    ctx.beginPath();
+    ctx.arc(headX, headY, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
 
 export function StarfieldBackdrop() {
@@ -92,7 +191,6 @@ export function StarfieldBackdrop() {
       const maxR = Math.hypot(width, height) * 0.64;
 
       if (!isLight) {
-        // Banda galáctica sutil (Vía Láctea en diagonal)
         const nebulaGrad = ctx.createRadialGradient(
           width * 0.28,
           height * 0.24,
@@ -109,7 +207,6 @@ export function StarfieldBackdrop() {
         ctx.fillRect(0, 0, width, height);
       }
 
-      // Retícula celeste (arcos de declinación y meridianos suaves)
       ctx.strokeStyle = isLight ? "rgba(17, 24, 39, 0.05)" : "rgba(153, 165, 184, 0.075)";
       ctx.lineWidth = 1;
       for (const ratio of [0.24, 0.46, 0.68, 0.9]) {
@@ -151,6 +248,10 @@ export function StarfieldBackdrop() {
           ctx.beginPath();
           ctx.arc(x, y, star.size, 0, Math.PI * 2);
           ctx.fill();
+        }
+
+        if (!reduced) {
+          drawComets(ctx, width, height, timeSec);
         }
       }
 
