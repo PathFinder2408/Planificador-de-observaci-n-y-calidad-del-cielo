@@ -1,1 +1,79 @@
 @import "tailwindcss";
+
+:root {
+  color-scheme: dark light;
+
+  --bg-canvas: #0b0e14;
+  --bg-surface: #131822;
+  --bg-elevated: #19202d;
+  --border-hairline: #252e3f;
+
+  --text-primary: #e6ebf2;
+  --text-secondary: #99a5b8;
+
+  --accent-sodium: #e59838;
+  --accent-sodium-contrast: #0b0e14;
+
+  --signal-ok: #34a874;
+  --signal-warn: #e59838;
+  --signal-bad: #e05d5a;
+
+  --chart-line-1: #e59838;
+  --chart-line-2: #5b9bd5;
+  --chart-line-3: #34a874;
+  --chart-line-4: #c084fc;
+  --chart-line-5: #f472b6;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-canvas: #f3f5f8;
+    --bg-surface: #ffffff;
+    --bg-elevated: #e8edf3;
+    --border-hairline: #d1d9e4;
+
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+
+    --accent-sodium: #b45309;
+    --accent-sodium-contrast: #ffffff;
+
+    --signal-ok: #15803d;
+    --signal-warn: #b45309;
+    --signal-bad: #b91c1c;
+
+    --chart-line-1: #b45309;
+    --chart-line-2: #1d4ed8;
+    --chart-line-3: #15803d;
+    --chart-line-4: #7e22ce;
+    --chart-line-5: #be185d;
+  }
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.font-mono-tabular {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-sodium);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
