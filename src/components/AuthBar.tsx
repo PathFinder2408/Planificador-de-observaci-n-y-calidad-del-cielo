@@ -37,13 +37,13 @@ export function AuthBar({ user, onAuthChange }: AuthBarProps) {
       });
       const data = (await response.json()) as { user?: AuthUser; error?: string };
       if (!response.ok || !data.user) {
-        throw new Error(data.error ?? "Error de autenticación");
+        throw new Error(data.error ?? "No se pudo autenticar la cuenta. Verifica tus datos.");
       }
       onAuthChange(data.user);
       setOpen(false);
       setPassword("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error inesperado");
+      setError(err instanceof Error ? err.message : "Error inesperado al iniciar sesión.");
     } finally {
       setSubmitting(false);
     }
@@ -56,18 +56,18 @@ export function AuthBar({ user, onAuthChange }: AuthBarProps) {
 
   if (user) {
     return (
-      <div className="flex items-center gap-3">
-        <span className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-200">
-          <User className="h-3.5 w-3.5 text-sky-400" />
+      <div className="flex items-center gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs text-[var(--text-primary)]">
+          <User className="h-3.5 w-3.5 text-[var(--accent-sodium)]" aria-hidden="true" />
           {user.name}
         </span>
         <button
           type="button"
           onClick={handleLogout}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-700"
+          className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border-hairline)] bg-[var(--bg-elevated)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)]"
         >
-          <LogOut className="h-3.5 w-3.5" />
-          Salir
+          <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
+          Cerrar sesión
         </button>
       </div>
     );
@@ -78,23 +78,31 @@ export function AuthBar({ user, onAuthChange }: AuthBarProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-xl bg-sky-500 px-3.5 py-2 text-xs font-semibold text-slate-950 hover:bg-sky-400"
+        className="inline-flex items-center gap-1.5 rounded-md border border-[var(--accent-sodium)] bg-[var(--accent-sodium)] px-3 py-1.5 text-xs font-semibold text-[var(--accent-sodium-contrast)]"
       >
-        <LogIn className="h-3.5 w-3.5" />
-        Ingresar / Favoritos
+        <LogIn className="h-3.5 w-3.5" aria-hidden="true" />
+        Ingresar
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="auth-dialog-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+        >
+          <div className="w-full max-w-md rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">
-                {mode === "login" ? "Iniciar sesión" : "Crear cuenta"}
+              <h2
+                id="auth-dialog-title"
+                className="text-lg font-semibold text-[var(--text-primary)]"
+              >
+                {mode === "login" ? "Ingresar a tu cuenta" : "Crear cuenta"}
               </h2>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="text-xs text-slate-400 hover:text-white"
+                className="rounded px-2 py-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               >
                 Cerrar
               </button>
@@ -103,49 +111,71 @@ export function AuthBar({ user, onAuthChange }: AuthBarProps) {
             <form onSubmit={handleSubmit} className="space-y-3">
               {mode === "register" && (
                 <div>
-                  <label className="mb-1 block text-xs text-slate-400">Nombre</label>
+                  <label
+                    htmlFor="auth-name"
+                    className="mb-1 block text-xs text-[var(--text-secondary)]"
+                  >
+                    Nombre completo
+                  </label>
                   <input
+                    id="auth-name"
                     type="text"
                     required
                     minLength={2}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+                    className="w-full rounded-md border border-[var(--border-hairline)] bg-[var(--bg-elevated)] px-3 py-2 text-sm text-[var(--text-primary)]"
                   />
                 </div>
               )}
 
               <div>
-                <label className="mb-1 block text-xs text-slate-400">Correo electrónico</label>
+                <label
+                  htmlFor="auth-email"
+                  className="mb-1 block text-xs text-[var(--text-secondary)]"
+                >
+                  Correo electrónico
+                </label>
                 <input
+                  id="auth-email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+                  className="w-full rounded-md border border-[var(--border-hairline)] bg-[var(--bg-elevated)] px-3 py-2 text-sm text-[var(--text-primary)]"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-xs text-slate-400">Contraseña</label>
+                <label
+                  htmlFor="auth-password"
+                  className="mb-1 block text-xs text-[var(--text-secondary)]"
+                >
+                  Contraseña (mínimo 8 caracteres)
+                </label>
                 <input
+                  id="auth-password"
                   type="password"
                   required
                   minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+                  className="w-full rounded-md border border-[var(--border-hairline)] bg-[var(--bg-elevated)] px-3 py-2 text-sm text-[var(--text-primary)]"
                 />
               </div>
 
-              {error && <p className="text-xs text-rose-400">{error}</p>}
+              {error && (
+                <p role="alert" className="text-xs text-[var(--signal-bad)]">
+                  {error}
+                </p>
+              )}
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-sky-500 py-2.5 text-sm font-semibold text-slate-950 hover:bg-sky-400 disabled:opacity-50"
+                className="w-full rounded-md bg-[var(--accent-sodium)] py-2 text-sm font-semibold text-[var(--accent-sodium-contrast)] disabled:opacity-50"
               >
-                {submitting ? "Procesando..." : mode === "login" ? "Entrar" : "Registrarme"}
+                {submitting ? "Verificando..." : mode === "login" ? "Ingresar" : "Registrar cuenta"}
               </button>
             </form>
 
@@ -155,11 +185,11 @@ export function AuthBar({ user, onAuthChange }: AuthBarProps) {
                 setMode(mode === "login" ? "register" : "login");
                 setError(null);
               }}
-              className="mt-4 w-full text-center text-xs text-sky-400 hover:underline"
+              className="mt-4 w-full text-center text-xs text-[var(--accent-sodium)] hover:underline"
             >
               {mode === "login"
-                ? "¿No tienes cuenta? Regístrate aquí"
-                : "¿Ya tienes cuenta? Inicia sesión"}
+                ? "¿No tienes cuenta? Crea una aquí"
+                : "¿Ya tienes cuenta? Ingresa aquí"}
             </button>
           </div>
         </div>

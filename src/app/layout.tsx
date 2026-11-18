@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Planificador de Observación y Calidad del Cielo",
+  title: "Planificador de observación y calidad del cielo",
   description:
-    "Efemérides astronómicas, visibilidad de objetos Messier y calidad meteorológica del cielo para observatorios de Chile.",
+    "Consola de efemérides astronómicas, visibilidad de objetos Messier y calidad meteorológica para observatorios de Chile.",
 };
 
 export default function RootLayout({
@@ -13,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased">{children}</body>
+    <html lang="es-CL">
+      <body className="min-h-screen antialiased">{children}</body>
     </html>
   );
 }

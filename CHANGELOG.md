@@ -7,6 +7,15 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-18
+
+### Changed
+
+- Rediseño integral "Consola de Cúpula" con tokens CSS semánticos en `src/app/globals.css` (modo oscuro nocturno + `prefers-color-scheme: light`, `prefers-reduced-motion`, foco visible WCAG AA).
+- Fuentes autoalojadas `@fontsource/ibm-plex-sans` y `@fontsource/ibm-plex-mono` con cifras tabulares.
+- Nuevo mapa radial interactivo `ObservatoryRadialMap` (constelación operativa por categoría y blancos) + `TelemetryRail` con histograma horario de puntos de Open-Meteo.
+- Verificación visual en escritorio (`1440x900`) y móvil (`360x780`) con cero desbordamiento horizontal; captura guardada en `docs/design/screens/desktop.png` y `public/screenshots/dashboard.png`.
+
 ## [0.5.0] - 2026-11-18
 
 ### Added

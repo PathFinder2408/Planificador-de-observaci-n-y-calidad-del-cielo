@@ -7,8 +7,9 @@ import type { ObservationResponse } from "@/lib/types/observation";
 import { AltitudeChart } from "@/components/AltitudeChart";
 import { AuthBar, type AuthUser } from "@/components/AuthBar";
 import { ObjectsTable } from "@/components/ObjectsTable";
+import { ObservatoryRadialMap } from "@/components/ObservatoryRadialMap";
 import { SiteSelector } from "@/components/SiteSelector";
-import { SummaryCards } from "@/components/SummaryCards";
+import { TelemetryRail } from "@/components/TelemetryRail";
 
 interface FavoriteItem {
   kind: "site" | "target";
@@ -44,7 +45,7 @@ export function ObservationPlanner() {
         setUser(body.user);
       })
       .catch(() => {
-        /* ignore abort or offline auth check */
+        /* ignore abort */
       });
     return () => controller.abort();
   }, []);
@@ -73,7 +74,7 @@ export function ObservationPlanner() {
       .then(async (response) => {
         if (!response.ok) {
           const body = (await response.json().catch(() => ({}))) as { error?: string };
-          throw new Error(body.error ?? `Error HTTP ${response.status}`);
+          throw new Error(body.error ?? `No se pudo consultar la noche (HTTP ${response.status}).`);
         }
         return (await response.json()) as ObservationResponse;
       })
@@ -93,7 +94,11 @@ export function ObservationPlanner() {
         if (err instanceof DOMException && err.name === "AbortError") {
           return;
         }
-        setError(err instanceof Error ? err.message : "Error cargando datos de observación");
+        setError(
+          err instanceof Error
+            ? err.message
+            : "No se pudieron cargar las efemérides. Intenta recargar la página."
+        );
       })
       .finally(() => {
         if (!controller.signal.aborted) {
@@ -171,33 +176,33 @@ export function ObservationPlanner() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-800 pb-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-sky-400">
-            Región de Coquimbo &amp; Observatorios de Chile
-          </p>
-          <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Planificador de Observación y Calidad del Cielo
+      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--border-hairline)] pb-5">
+        <div className="max-w-2xl">
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-3xl">
+            Planificador de observación astronómica
           </h1>
-          <p className="mt-1.5 max-w-2xl text-sm text-slate-400">
-            Efemérides calculadas en{" "}
-            <span className="font-mono text-slate-300">America/Santiago</span> con{" "}
-            <span className="font-mono text-slate-300">astronomy-engine</span> e índice de calidad
-            nocturna con datos reales de Open-Meteo.
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+            Efemérides y calidad atmosférica nocturna para observatorios de la Región de Coquimbo y
+            el norte de Chile.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {user && (
             <button
               type="button"
               onClick={() => void handleToggleFavorite("site", siteId)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-200 hover:border-amber-400/60"
+              className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)]"
             >
               <Star
-                className={`h-3.5 w-3.5 ${isSiteFavorite ? "fill-amber-400 text-amber-400" : "text-slate-400"}`}
+                className={`h-3.5 w-3.5 ${
+                  isSiteFavorite
+                    ? "fill-[var(--accent-sodium)] text-[var(--accent-sodium)]"
+                    : "text-[var(--text-secondary)]"
+                }`}
+                aria-hidden="true"
               />
-              {isSiteFavorite ? "Sitio favorito" : "Guardar sitio"}
+              {isSiteFavorite ? "Sitio guardado" : "Guardar sitio"}
             </button>
           )}
           <AuthBar user={user} onAuthChange={handleAuthChange} />
@@ -214,25 +219,46 @@ export function ObservationPlanner() {
       />
 
       {error && (
-        <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-4 text-sm text-rose-200">
+        <div
+          role="alert"
+          className="rounded-lg border border-[var(--signal-bad)] bg-[var(--bg-surface)] p-4 text-sm text-[var(--text-primary)]"
+        >
           {error}
         </div>
       )}
 
       {loading && !data && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-10 text-center text-sm text-slate-400">
-          Calculando efemérides astronómicas y consultando pronóstico meteorológico...
+        <div className="rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-10 text-center text-sm text-[var(--text-secondary)]">
+          Calculando efemérides y consultando pronóstico atmosférico...
         </div>
       )}
 
       {data && (
         <>
-          <SummaryCards
-            ephemeris={data.ephemeris}
-            weather={data.weather}
-            weatherWarning={data.weatherWarning}
-          />
+          <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+            <div className="min-w-0 lg:col-span-8">
+              <ObservatoryRadialMap
+                site={data.site}
+                ephemeris={data.ephemeris}
+                planets={data.visibility.planets}
+                messier={data.visibility.messier}
+                selectedIds={selectedIds}
+                onToggleSelect={handleToggleSelect}
+              />
+            </div>
+
+            <div className="min-w-0 lg:col-span-4">
+              <TelemetryRail
+                site={data.site}
+                ephemeris={data.ephemeris}
+                weather={data.weather}
+                weatherWarning={data.weatherWarning}
+              />
+            </div>
+          </div>
+
           <AltitudeChart
+            ephemeris={data.ephemeris}
             sampleTimesChile={data.visibility.sampleTimesChile}
             selectedTargets={selectedTargets}
           />
