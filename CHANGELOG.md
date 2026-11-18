@@ -7,6 +7,16 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-18
+
+### Added
+
+- Catálogo de 10 sitios astronómicos y proyectos en Chile (`Vera C. Rubin`, `Gemini South & SOAR`, `Cerro Tololo`, `La Silla`, `Las Campanas & GMT`, `Paranal`, `Cerro Armazones / ELT`, `ALMA`, `CTAO-South`, `La Serena`) en `src/data/sites.ts`.
+- Catálogo de 20 objetos Messier (`src/data/messier.ts`).
+- Helpers de zona horaria `America/Santiago` con soporte DST (`src/lib/astro/timezone.ts`).
+- Motor de efemérides (`src/lib/astro/ephemeris.ts`) y visibilidad nocturna de planetas y Messier (`src/lib/astro/visibility.ts`) usando `astronomy-engine`.
+- Suite de tests unitarios con casos astronómicos de referencia en `tests/unit/astro/`.
+
 ## [0.1.0] - 2026-11-18
 
 ### Added
