@@ -7,6 +7,15 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-18
+
+### Added
+
+- Cliente resiliente de Open-Meteo (`/v1/forecast`) con validación Zod, timeout (`AbortController`), reintentos acotados y caché en memoria (`src/lib/weather/openMeteo.ts`).
+- Fórmula del Índice de Calidad de Observación 0–100 (`src/lib/weather/qualityIndex.ts`) documentada en `README.md`.
+- Endpoints `GET /api/sites` y `GET /api/observation` con degradación controlada ante fallos de Open-Meteo.
+- Tests unitarios y de integración (incluyendo simulación de timeouts, HTTP 500, HTTP 404 y JSON corrupto) en `tests/unit/weather/` y `tests/integration/api/observation.test.ts`.
+
 ## [0.2.0] - 2026-11-18
 
 ### Added

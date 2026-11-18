@@ -41,3 +41,16 @@ Aplicación web orientada a la planificación de sesiones de observación astron
 - [Registro de Riesgos](./docs/RISKS.md)
 - [Bitácora de Desarrollo](./docs/worklog/2026-11-18.md)
 - [Changelog](./CHANGELOG.md)
+
+## Fórmula del Índice de Calidad de Observación (0–100)
+
+El índice nocturno evalúa las condiciones meteorológicas horarias entre las `19:00` y las `06:00` (`America/Santiago`) mediante cuatro subíndices acotados en `[0, 100]`:
+
+- **Nubosidad (`55%`):** $\text{cloudScore} = \text{clamp}(100 - \text{cloudCover} \times 1.1,\, 0,\, 100)$
+- **Humedad relativa (`20%`):** $100$ si $\text{humidity} \le 40\%$; si no, $\text{clamp}(100 - \frac{\text{humidity} - 40}{55} \times 100,\, 0,\, 100)$
+- **Viento a 10 m (`15%`):** $100$ si $\text{wind} \le 15\text{ km/h}$; si no, $\text{clamp}(100 - \frac{\text{wind} - 15}{40} \times 100,\, 0,\, 100)$
+- **Estabilidad térmica (`10%`):** $100$ entre $2\,^\circ\text{C}$ y $18\,^\circ\text{C}$; penaliza $5\text{ pts}/^\circ\text{C}$ fuera de ese rango.
+
+$$\text{Índice} = \text{round}(0.55 \cdot \text{cloudScore} + 0.20 \cdot \text{humidityScore} + 0.15 \cdot \text{windScore} + 0.10 \cdot \text{thermalScore})$$
+
+Clasificación: **80–100** Excelente · **60–79** Buena · **40–59** Regular · **0–39** Mala.
