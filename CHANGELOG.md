@@ -7,6 +7,14 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-18
+
+### Added
+
+- Interfaz nocturna con Tailwind CSS y Recharts (`SiteSelector`, `SummaryCards`, `AltitudeChart`, `ObjectsTable`, `ObservationPlanner`).
+- Gráfico interactivo de altitud nocturna con línea de referencia a 20° y selección comparativa de hasta 5 objetos.
+- Tabla filtrable (Todos, Observables ≥20°, Planetas, Catálogo Messier) ordenada por altitud máxima.
+
 ## [0.3.0] - 2026-11-18
 
 ### Added
